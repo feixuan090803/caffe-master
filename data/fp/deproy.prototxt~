@@ -1,0 +1,160 @@
+name: "FPDetection"
+
+input: "data"
+input_dim: 1
+input_dim: 3
+input_dim: 39
+input_dim: 39
+layers {
+  name: "conv1"
+  type: CONVOLUTION
+  bottom: "data"
+  top: "conv1"
+    convolution_param {
+    num_output: 20
+    kernel_size: 4
+    stride: 1
+      }
+}
+layers {
+  name: "tanh1"
+  type: TANH
+  bottom: "conv1"
+  top: "conv1"
+}
+
+layers {
+  name: "pool1"
+  type: POOLING
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+
+layers{
+	name:"norm1"
+	type: LRN
+	bottom:"pool1"
+	top:"norm1"
+	lrn_param{
+		local_size:3
+		alpha:0.0001
+		beta:0.75
+	}
+}
+
+
+
+layers {
+  name: "conv2"
+  type: CONVOLUTION
+  bottom: "pool1"
+  top: "conv2"
+  convolution_param {
+    num_output: 40
+    kernel_size: 3
+    stride: 1
+   
+  }
+}
+
+
+
+layers{
+	name:"tanh2"
+	type:TANH
+	bottom:"conv2"
+	top:"conv2"
+}
+
+layers {
+  name: "pool2"
+  type: POOLING
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+
+layers{
+	name:"norm2"
+	type:LRN
+	bottom:"pool2"
+	top:"norm2"
+	lrn_param{
+		local_size:3
+		alpha:0.0001
+		beta:0.75
+	}
+}
+
+
+layers {
+  name: "conv3"
+  type: CONVOLUTION
+  bottom: "pool2"
+  top: "conv3"
+  convolution_param {
+    num_output: 60
+    kernel_size: 3
+    stride: 1
+  }
+}
+
+layers{
+	name:"tanh3"
+	type:TANH
+	bottom:"conv3"
+	top:"conv3"
+}
+
+layers {
+  name: "pool3"
+  type: POOLING
+  bottom: "conv3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layers {
+  name: "conv4"
+  type: CONVOLUTION
+  bottom: "pool3"
+  top: "conv4"
+  convolution_param {
+    num_output: 80
+    kernel_size: 2
+    stride: 1
+  }
+
+}
+
+layers {
+  name: "fc5"
+  type: INNER_PRODUCT
+  bottom: "conv4"
+  top: "fc5"
+  inner_product_param {
+    num_output: 120
+   }
+}
+
+layers {
+  name: "fc6"
+  type: INNER_PRODUCT
+  bottom: "fc5"
+  top: "fc6"
+  inner_product_param {
+    num_output: 10
+  }
+}
